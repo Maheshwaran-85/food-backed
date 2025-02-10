@@ -41,17 +41,17 @@ exports.getchild = async (req, res, next) => {
 exports.getbyidchild=async(req,res,next)=>{
     try{
         const {id}=req.body
-        const doc=await childmaster.findOne(id)
+        const doc=await childmaster.findById(id)
         if(!doc){
             return res.status(400).json({message:"the document not found"})
         }
-
+return res.status(200).json({message:"document found sucessfully",data:doc})
     }catch(err)
     {
         return res.status(500).json({ message: "An error occurred", error: err.message });  
     }
 }
-
+//update by id
 exports.updatebyidchild=async(req,res,next)=>{
     try{
         const {id}=req.body
@@ -62,7 +62,31 @@ exports.updatebyidchild=async(req,res,next)=>{
         if(gender)updateddoc.gender=gender
         if(weight)updateddoc.weight=weight
         if(bmi)updateddoc.bmi=bmi
+        const doc = await childmaster.findByIdAndUpdate(id, updateddoc , { new: true })
+        if (!doc) {
+            return res.status(404).json({ Message: "Document not found" })
+        }
+        return res.status(200).json({ Message: "Document updated successfully", data: doc })
+
+
+        
     }catch(err){
         return res.status(500).json({ message: "An error occurred", error: err.message });     
+    }
+}
+//delete by id
+
+exports.deletebyidchild=async(req,res,next)=>{
+    try{
+        const{id}=req.body
+       const doc=await childmaster.findByIdAndDelete(id)
+       if(!doc){
+        return res.status(400).json({message:"the document was not found"})
+       } 
+       return res.status(200).json({ Message: "Document deleted successfully"})
+
+    }catch(err){
+        return res.status(500).json({ message: "An error occured", error: err.message })
+
     }
 }
